@@ -1,8 +1,8 @@
 Config = {}
 Config.InventoryImage = "ox_inventory/web/images/"
-Config.Target = "qb" -- Supports: "qb"
+Config.Target = "qb-target" -- Supports: "qb-target"
 Config.Menu = "ox_lib"  -- Supports: "ox_lib"
-Config.Phone = "qb" -- Supports: "qb"
+Config.Phone = "qb-phone" -- Supports: "qb"
 
 Config.TaskPed = 'a_m_y_stbla_02'
 Config.TaskPedHash = 'a_m_y_stbla_02'
