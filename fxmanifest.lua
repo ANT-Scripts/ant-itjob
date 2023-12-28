@@ -8,7 +8,6 @@ version '1.0.1'
 
 client_scripts{
     'client/client.lua',
-    'client/delivery.lua'
 }
 
 server_scripts {

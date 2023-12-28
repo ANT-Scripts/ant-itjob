@@ -39,8 +39,8 @@ local Translations = {
     mail = {
         ["sender"] = "Mr. Smith",
         --
-        ["subject"] = "IT C.E.O",
-        ["message"] = "Good Work! Get back to company to collect money."
+        ["subject"] = "CEO IT-Company",
+        ["message"] = "Great work. I really appreciate you going out there and getting the work done. Get back to me and I'll give you your paycheck."
     },
 
     qbmenu = {
