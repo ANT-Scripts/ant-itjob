@@ -179,55 +179,60 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNetEvent('ant-itjob:startdelivery', function(data)
-    lib.registerContext({
-        id = 'DeliveryMenu',
-        title = 'Delivery Instructions',
-        options = {
-          {
-            title = "Delivery Item: "..QBCore.Shared.Items[Config.DeliveryItem].label,
-            description = 'Deliver the '..QBCore.Shared.Items[Config.DeliveryItem].label..' to the location on your GPS to get paid.',
-            icon = "nui://" .. Config.InventoryImage .. QBCore.Shared.Items[Config.DeliveryItem].image,
-            disabled = true
-          },
-          {
-            title = 'Confirm',
-            description = 'Accept the Delivery Instructions and obtain your vehicle.',
-            icon = 'fa-solid fa-truck',
-            event = 'ant-itjob:client:startdelivery',
-            arrow = true
-          }
-        }
-      })
-      lib.showContext('DeliveryMenu')
+    if Config.Menu == "ox_lib" then
+        lib.registerContext({
+            id = 'DeliveryMenu',
+            title = 'Delivery Instructions',
+            options = {
+            {
+                title = "Delivery Item: "..QBCore.Shared.Items[Config.DeliveryItem].label,
+                description = 'Deliver the '..QBCore.Shared.Items[Config.DeliveryItem].label..' to the location on your GPS to get paid.',
+                icon = "nui://" .. Config.InventoryImage .. QBCore.Shared.Items[Config.DeliveryItem].image,
+                disabled = true
+            },
+            {
+                title = 'Confirm',
+                description = 'Accept the Delivery Instructions and obtain your vehicle.',
+                icon = 'fa-solid fa-truck',
+                event = 'ant-itjob:client:startdelivery',
+                arrow = true
+            }
+            }
+        })
+        lib.showContext('DeliveryMenu')
+    end
 end)
 
 RegisterNetEvent('ant-itjob:FixMenu', function()
-    local options = {}
-    for _, item in pairs(Config.Items) do
-        table.insert(options, {
-            title = 'Diagnose ' .. QBCore.Shared.Items[item].label,
-            icon = "nui://" .. Config.InventoryImage .. QBCore.Shared.Items[item].image,
-            arrow = true,
-            onSelect = function()
-                local p = promise.new()
-                QBCore.Functions.TriggerCallback('ant-itjob:server:CanDiagnose', function(allowed)
-                    p:resolve(allowed)
-                end)
-                local pass = Citizen.Await(p)
-                if pass then
-                    TriggerEvent('ant-itjob:checkpart', item)
-                else
-                    QBCore.Functions.Notify("You don't have an IT Toolbox", 'error')
+    if Config.Menu == "ox_lib" then
+
+        local options = {}
+        for _, item in pairs(Config.Items) do
+            table.insert(options, {
+                title = 'Diagnose ' .. QBCore.Shared.Items[item].label,
+                icon = "nui://" .. Config.InventoryImage .. QBCore.Shared.Items[item].image,
+                arrow = true,
+                onSelect = function()
+                    local p = promise.new()
+                    QBCore.Functions.TriggerCallback('ant-itjob:server:CanDiagnose', function(allowed)
+                        p:resolve(allowed)
+                    end)
+                    local pass = Citizen.Await(p)
+                    if pass then
+                        TriggerEvent('ant-itjob:checkpart', item)
+                    else
+                        QBCore.Functions.Notify("You don't have an IT Toolbox", 'error')
+                    end
                 end
-            end
+            })
+        end
+        lib.registerContext({
+            id = 'FixMenu',
+            title = "Diagnose & Fix",
+            options = options
         })
+        lib.showContext('FixMenu')
     end
-    lib.registerContext({
-        id = 'FixMenu',
-        title = "Diagnose & Fix",
-        options = options
-    })
-    lib.showContext('FixMenu')
 end)
 
 RegisterNetEvent('ant-itjob:checkpart')
@@ -251,20 +256,22 @@ AddEventHandler('ant-itjob:checkpart', function(item)
 end)
 
 RegisterNetEvent('ant-itjob:ImBroken', function(part)
-    lib.registerContext({
-        id = 'BrokenMenu',
-        title = "Broken Part",
-        options = {
-            {
-                title = 'Replace Part',
-                arrow = true,
-                onSelect = function()
-                    TriggerEvent('ant-itjob:replace', part)
-                end
-            },
-        }
-    })
-    lib.showContext('BrokenMenu')
+    if Config.Menu == "ox_lib" then
+        lib.registerContext({
+            id = 'BrokenMenu',
+            title = "Broken Part",
+            options = {
+                {
+                    title = 'Replace Part',
+                    arrow = true,
+                    onSelect = function()
+                        TriggerEvent('ant-itjob:replace', part)
+                    end
+                },
+            }
+        })
+        lib.showContext('BrokenMenu')
+    end
 end)
 
 RegisterNetEvent('ant-itjob:withdraw', function(data)
