@@ -1,8 +1,5 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-
-local client = true
-local status = false
-local delivery = 0
+local Delivery = 0
 
 local function PacketSell2(deliveryItem)
     QBCore.Functions.Progressbar("packetsell", Lang:t("progress.packetselling"), Config.ProgressbarTime, false, true, { 
@@ -16,8 +13,15 @@ local function PacketSell2(deliveryItem)
         flags = 49,
     }, {}, {}, function() -- Done
         TriggerServerEvent("ant-itjob:server:packetsell", deliveryItem)
-        TriggerEvent("ant-itjob:client:packetsell", deliveryItem)
-        map = true
+        if Delivery < 3 then
+            local newDeliveryItem = Config.Items[math.random(1, #Config.Items)]
+            TriggerEvent("ant-itjob:client:packetsell", newDeliveryItem)
+            local message = string.format("Delivery Item: %s", QBCore.Shared.Items[newDeliveryItem].label)
+            QBCore.Functions.Notify(message, "error")
+        else
+            Delivery = 0
+            QBCore.Functions.Notify("You've reached the maximum number of deliveries.", "error")    
+        end
         ClearPedTasksImmediately(ped)
     end, function() -- Cancel
         -- Cancel
@@ -26,63 +30,52 @@ end
 
 RegisterNetEvent("ant-itjob:client:startdelivery")
 AddEventHandler("ant-itjob:client:startdelivery", function(deliveryItem)
-    if client then 
-        if delivery == 0 then
-            TriggerEvent("ant-itjob:client:packetsell", deliveryItem)
-            if Config.GiveVehicle then
-                TriggerEvent("ant-itjob:SpawnDeliveryVeh")
-            end
-        else
-            QBCore.Functions.Notify(Lang:t("notify.ondelivery"), "error")
+    if Delivery == 0 then
+        print("here")
+        TriggerEvent("ant-itjob:client:packetsell", deliveryItem)
+        if Config.GiveVehicle then
+            TriggerEvent("ant-itjob:SpawnDeliveryVeh")
         end
     else
-        QBCore.Functions.Notify(Lang:t("notify.realy"), "error")
+        QBCore.Functions.Notify(Lang:t("notify.ondelivery"), "error")
     end
 end)
 
 RegisterNetEvent("ant-itjob:client:packetsell")
 AddEventHandler("ant-itjob:client:packetsell", function(deliveryItem)
-    if client then
-        if delivery < 3 then
-            local random = math.random(1, #Config.DeliveryCoords)
-            QBCore.Functions.Notify(Lang:t("notify.neworder"), "primary")
-            local deliveryCoords = Config.DeliveryCoords[random]
-            SetNewWaypoint(deliveryCoords["x"], deliveryCoords["y"])
+    local random = math.random(1, #Config.DeliveryCoords)
+    QBCore.Functions.Notify(Lang:t("notify.neworder"), "primary")
+    local deliveryCoords = Config.DeliveryCoords[random]
+    SetNewWaypoint(deliveryCoords["x"], deliveryCoords["y"])
 
-            -- Add blip to delivery coords
-            local blip = AddBlipForCoord(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"])
-            SetBlipSprite(blip, 1) -- Choose the sprite for the blip (1 is standard)
-            SetBlipDisplay(blip, 4) -- Display as a standard blip on the map and minimap
-            SetBlipColour(blip, 5) -- Choose the color of the blip (5 is yellow)
-            SetBlipScale(blip, 0.8) -- Set the scale of the blip
+    -- Add blip to Delivery coords
+    local blip = AddBlipForCoord(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"])
+    SetBlipSprite(blip, 1) -- Choose the sprite for the blip (1 is standard)
+    SetBlipDisplay(blip, 4) -- Display as a standard blip on the map and minimap
+    SetBlipColour(blip, 5) -- Choose the color of the blip (5 is yellow)
+    SetBlipScale(blip, 0.8) -- Set the scale of the blip
 
-            local showingText = true -- Flag to control text visibility
-            while showingText do
-                local ped = PlayerPedId()
-                local plycoords = GetEntityCoords(ped)
-                local distance = #(plycoords - vector3(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"]))
-                Citizen.Wait(1)
-                if distance < 1.0 and client then
-                    QBCore.Functions.DrawText3D(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"], Lang:t("qbmenu.deliver"))
-                    if IsControlJustPressed(1, 38) then
-                        QBCore.Functions.TriggerCallback('ant-itjob:itemcheck', function(data)
-                            if data then
-                                PacketSell2(deliveryItem) -- Sell the item if it exists
-                                showingText = false
-                                RemoveBlip(blip)
-                                delivery = delivery + 1 -- Increment delivery count
-                            else
-                                QBCore.Functions.Notify(Lang:t("notify.needitem"), "error")
-                            end
-                        end, deliveryItem)
+    local showingText = true -- Flag to control text visibility
+    while showingText do
+        local ped = PlayerPedId()
+        local plycoords = GetEntityCoords(ped)
+        local distance = #(plycoords - vector3(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"]))
+        Citizen.Wait(1)
+        if distance < 1.0 then
+            local drawTextLabel = string.format(Lang:t("qbmenu.deliver"), QBCore.Shared.Items[deliveryItem].label)
+            QBCore.Functions.DrawText3D(deliveryCoords["x"], deliveryCoords["y"], deliveryCoords["z"], drawTextLabel)
+            if IsControlJustPressed(1, 38) then
+                QBCore.Functions.TriggerCallback('ant-itjob:itemcheck', function(data)
+                    if data then
+                        PacketSell2(deliveryItem) -- Sell the item if it exists
+                        showingText = false
+                        RemoveBlip(blip)
+                        Delivery = Delivery + 1 -- Increment Delivery count
+                    else
+                        QBCore.Functions.Notify(Lang:t("notify.needitem"), "error")
                     end
-                end
+                end, deliveryItem)
             end
-        else
-            client = true
-            status = false
-            delivery = 0
-            QBCore.Functions.Notify("You've reached the maximum number of deliveries.", "error")
         end
     end
 end)

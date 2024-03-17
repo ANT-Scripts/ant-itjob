@@ -1,9 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-
-canStart = true
-ongoing = false
-fixed = false
-local alreadyEnteredZone = false
+CanStart = true
+Ongoing = false
+Fixed = false
 
 Citizen.CreateThread(function()
     ItCompJob = AddBlipForCoord(Config.BlipLocation)
@@ -31,14 +29,10 @@ end)
 
 Citizen.CreateThread(function()
     hashKey = RequestModel(GetHashKey(Config.ShopPed))
-
-
     while not HasModelLoaded(GetHashKey(Config.ShopPed)) do
         Wait(1)
     end
-
     local npc = CreatePed(4, Config.ShopHash, Config.ShopLocation, false, true)
-
     SetEntityHeading(npc, Config.ShopHeading)
     FreezeEntityPosition(npc, true)
     SetEntityInvincible(npc, true)
@@ -47,14 +41,10 @@ end)
 
 Citizen.CreateThread(function()
     hashKey = RequestModel(GetHashKey(Config.TaskPed))
-
-
     while not HasModelLoaded(GetHashKey(Config.TaskPed)) do
         Wait(1)
     end
-
     local npc = CreatePed(4, Config.TaskPedHash, Config.TaskPedLocation, false, true)
-    
     SetEntityHeading(npc, Config.TaskPedHeading)
     FreezeEntityPosition(npc, true)
     SetEntityInvincible(npc, true)
@@ -65,10 +55,21 @@ Citizen.CreateThread(function()
     exports['qb-target']:AddTargetModel(Config.ShopPed, {
     	options = {
     		{
-    			event = 'ant-itjob:openshop',
     			icon = 'far fa-clipboard',
     			label = Lang:t('label.shop'),
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:openshop')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:openshop')
+                    end
+                end
     		}
     	},
     	distance = 2.5,
@@ -79,22 +80,55 @@ Citizen.CreateThread(function()
     exports['qb-target']:AddTargetModel(Config.TaskPed, {
     	options = {
     		{
-    			event = 'ant-itjob:takejob',
     			icon = 'far fa-clipboard',
     			label = Lang:t('label.reqjob'),
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:takejob')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:takejob')
+                    end
+                end
     		},
             {
-                event = 'ant-itjob:finishjob',
                 icon = 'far fa-clipboard',
                 label = Lang:t('label.finishjob'),
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:finishjob')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:finishjob')
+                    end
+                end
             },
             {
-                event = 'ant-itjob:startdelivery',
                 icon = 'far fa-clipboard',
                 label = Lang:t('label.startdelivery'),
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:startdelivery')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:startdelivery')
+                    end
+                end
             }
     	},
     	distance = 2.5,
@@ -103,9 +137,9 @@ end)
 
 RegisterNetEvent('ant-itjob:takejob')
 AddEventHandler('ant-itjob:takejob', function()
-    if canStart then
-        canStart = false
-        ongoing = true
+    if CanStart then
+        CanStart = false
+        Ongoing = true
         local randomIndex = math.random(1, #Config.Items)
         BrokenPart = Config.Items[randomIndex] -- Assign s to a random item from Config.Items
         if Config.Debug then print(BrokenPart) end
@@ -123,8 +157,8 @@ end)
 
 RegisterNetEvent('ant-itjob:finishjob')
 AddEventHandler('ant-itjob:finishjob', function()
-    if ongoing == true then
-        if fixed == true then
+    if Ongoing == true then
+        if Fixed == true then
             TriggerEvent('ant-itjob:withdraw')
         else
             QBCore.Functions.Notify(Lang:t('notify.notfinish'), 'error')
@@ -157,7 +191,7 @@ end)
 RegisterNetEvent("ant-itjob:goinside")
 AddEventHandler("ant-itjob:goinside", function(missionTarget)
     local missionTarget = Config.Locations[#Config.Locations]
-    if ongoing == true then
+    if Ongoing == true then
         SetEntityCoords(PlayerPedId(), missionTarget.inside.x, missionTarget.inside.y, missionTarget.inside.z)
         TriggerEvent("ant-itjob:createpc", missionTarget)
     else
@@ -168,7 +202,7 @@ end)
 RegisterNetEvent("ant-itjob:gooutside")
 AddEventHandler("ant-itjob:gooutside", function(missionTarget)
     local missionTarget = Config.Locations[#Config.Locations]
-    if ongoing == true then
+    if Ongoing == true then
         SetEntityCoords(PlayerPedId(), missionTarget.location.x, missionTarget.location.y, missionTarget.location.z)
     else
         QBCore.Functions.Notify(Lang:t('notify.needtostartjob'), 'error')
@@ -185,13 +219,25 @@ Citizen.CreateThread(function()
             debugPoly = false, 
             useZ=true
         }, {
-            options = {{
-                label = Lang:t("label.checkpc"),
-                icon = 'fa-solid fa-hand-holding',
-                action = function()
-                    openfixmenu() 
-                end}},
-                job = Config.job,
+            options = {
+                {
+                    label = Lang:t("label.checkpc"),
+                    icon = 'fa-solid fa-hand-holding',
+                    action = function()
+                        if Config.RequireJob then
+                            local PlayerData = QBCore.Functions.GetPlayerData()
+                            local job = PlayerData.job.name
+                            if job == Config.Job then
+                                openfixmenu()
+                            else
+                                QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                            end
+                        else
+                            openfixmenu()
+                        end
+                    end
+                }
+            },
             distance = 2.0
         })
     end
@@ -209,8 +255,19 @@ Citizen.CreateThread(function()
             {
                 label = Lang:t("label.entry"),
                 icon = 'fa-solid fa-hand-holding',
-                event = 'ant-itjob:goinside',
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:goinside')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:goinside')
+                    end
+                end
             },
         },
         distance = 2.0
@@ -229,8 +286,19 @@ Citizen.CreateThread(function()
             {
                 label = Lang:t("label.exit"),
                 icon = 'fa-solid fa-hand-holding', 
-                event = 'ant-itjob:gooutside',
-                job = Config.job
+                action = function()
+                    if Config.RequireJob then
+                        local PlayerData = QBCore.Functions.GetPlayerData()
+                        local job = PlayerData.job.name
+                        if job == Config.Job then
+                            TriggerEvent('ant-itjob:gooutside')
+                        else
+                            QBCore.Functions.Notify(Lang:t('notify.nojob'), 'error')
+                        end
+                    else
+                        TriggerEvent('ant-itjob:gooutside')
+                    end
+                end
             },
         },
         distance = 2.0
@@ -370,7 +438,7 @@ RegisterNetEvent('ant-itjob:cashbank', function(data)
                 icon = 'fa-solid fa-money-bill',
                 onSelect = function()
                     TriggerEvent('ant-itjob:finishjob2')
-                    canStart = true
+                    CanStart = true
                 end,
                 arrow = true
             },
@@ -380,7 +448,7 @@ RegisterNetEvent('ant-itjob:cashbank', function(data)
                 icon = 'fa-solid fa-money-bill',
                 onSelect = function()
                     TriggerEvent('ant-itjob:finishjob3')
-                    canStart = true
+                    CanStart = true
                 end,
                 arrow = true
             }
@@ -392,17 +460,17 @@ end)
 RegisterNetEvent('ant-itjob:finishjob2')
 AddEventHandler('ant-itjob:finishjob2', function()
     TriggerServerEvent('ant-itjob:server:givemoney', Config.Payout)
-    canStart = true
-    ongoing = false
-    fixed = false
+    CanStart = true
+    Ongoing = false
+    Fixed = false
 end)
 
 RegisterNetEvent('ant-itjob:finishjob3')
 AddEventHandler('ant-itjob:finishjob3', function()
     TriggerServerEvent('ant-itjob:server:givemoney2', Config.Payout)
-    canStart = true
-    ongoing = false
-    fixed = false
+    CanStart = true
+    Ongoing = false
+    Fixed = false
 end)
 
 RegisterNetEvent('ant-itjob:replace')
@@ -421,8 +489,9 @@ AddEventHandler('ant-itjob:replace', function(part)
             }, {}, {}, function() -- Done
                 print(part)
                 TriggerServerEvent('ant-itjob:server:takeitem', part, 1)
+                TriggerServerEvent('ant-itjob:server:fixedPCLog', part)
                 TriggerEvent('ant-itjob:fixedpc')
-                fixed = true
+                Fixed = true
                 RemoveBlip(targetBlip)
             end, function() -- Cancel
                 QBCore.Functions.Notify("Cancelled Part Replacement", "error")
@@ -458,12 +527,12 @@ AddEventHandler('ant-itjob:fixedpc', function()
             }
         })
     elseif Config.Phone == "notify" then
-        QBCore.Functions.Notify(Lang:t("mail.subject"), Lang:t("mail.message"), 'error')
+        QBCore.Functions.Notify(Lang:t("mail.message"), 'info')
     end
 end)
 
 function openfixmenu()
-    if fixed == true then
+    if Fixed == true then
         QBCore.Functions.Notify(Lang:t('notify.alreadyfixed'), 'error')
     else
         TriggerEvent('ant-itjob:FixMenu')

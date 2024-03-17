@@ -1,5 +1,4 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-
 local DiscordWebhook = {
     url = Config.WebhookURL,
     name = Config.WebhookName,
@@ -24,7 +23,6 @@ end)
 RegisterServerEvent('ant-itjob:server:giveitem', function(item)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-
     Player.Functions.AddItem(item)
 end)
 
@@ -33,6 +31,16 @@ RegisterServerEvent('ant-itjob:server:takeitem', function(item, amount)
     local Player = QBCore.Functions.GetPlayer(src)
     Player.Functions.RemoveItem(item, amount)
     TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[item], "remove", amount)
+end)
+
+RegisterServerEvent('ant-itjob:server:fixedPCLog', function(part)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local firstName = Player.PlayerData.charinfo.firstname
+    local lastName = Player.PlayerData.charinfo.lastname
+    local cid = Player.PlayerData.citizenid
+    local data = string.format("%s %s (%s) fixed a PC by replacing `%s`", firstName, lastName, cid, part)
+    ITJobLog(data)
 end)
 
 RegisterServerEvent('ant-itjob:server:givemoney', function(amount)
@@ -59,13 +67,22 @@ RegisterServerEvent('ant-itjob:server:packetsell')
 AddEventHandler('ant-itjob:server:packetsell', function(deliveryItem)
     local xPlayer = QBCore.Functions.GetPlayer(source)
     local smallbag = xPlayer.Functions.GetItemByName(deliveryItem)
+    local deliveryItemPrice = 0
+    local deliveryPrice = math.random(Config.DeliveryPrice.min, Config.DeliveryPrice.max)
     if smallbag ~= nil then
+        for k,v in pairs(Config.PcParts.items) do
+            if deliveryItem == v.name then
+                deliveryItemPrice = v.price
+                break
+            end
+        end
         local firstName = xPlayer.PlayerData.charinfo.firstname
         local lastName = xPlayer.PlayerData.charinfo.lastname
         local cid = xPlayer.PlayerData.citizenid
         xPlayer.Functions.RemoveItem(deliveryItem, 1)
-        xPlayer.Functions.AddMoney('cash', Config.ItemPrice)
-		TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.deliverynotify") ..Config.ItemPrice, "primary", 5000)
+        local totalPrice = deliveryPrice + deliveryItemPrice
+        xPlayer.Functions.AddMoney('cash', totalPrice)
+		TriggerClientEvent('QBCore:Notify', source, Lang:t("notify.deliverynotify")..totalPrice, "primary", 5000)
         TriggerClientEvent('inventory:client:ItemBox', source, QBCore.Shared.Items[deliveryItem], "remove", 1)
         local data = string.format("%s %s (%s) delivered a(n) `%s` as part of the IT Job", firstName, lastName, cid, deliveryItem)
         ITJobLog(data)

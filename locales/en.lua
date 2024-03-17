@@ -2,45 +2,38 @@ local Translations = {
     label = {
         ["shop"] = "Shop",
         ["reqjob"] = "Repair Job",
-        ["finishjob"] = "Finish job",
-        ["entry"] = "Entry",
-        ["exit"] = "Exit",
+        ["finishjob"] = "Collect Payment",
+        ["entry"] = "Enter House",
+        ["exit"] = "Exit House",
         ["checkpc"] = "Check PC",
         ["delivery"] = "Deliver",
         ["startdelivery"] = "Delivery Job"
     },
 
     notify = {
-        ["jobinprogress"] = "Your job is still in progress.",
-        ["recivedlocation"] = "You recived an caller location.",
-        ["alreadychecked"] = "You already checked this part.",
-        ["imnotbroken"] = "This part is not broken.",
-        ["donthaveitem"] = "You don't have item.",
+        ["jobinprogress"] = "Your job is still in progress",
+        ["recivedlocation"] = "You received a caller's location. It's marked on your GPS",
+        ["alreadychecked"] = "You already checked this part",
+        ["imnotbroken"] = "This part is not broken",
+        ["donthaveitem"] = "You don't have this item",
         ["alreadyfixed"] = "You already fixed this PC",
-        ["notfinish"] = "You're not done yet!",
-        ["needtostartjob"] = "You need to start job first!",
-        ["needtocheckmon"] = "You first need to check Monitor!",
-        ["needtocheckgpu"] = "You first need to check Graphic Card!",
-        ["needtocheckcpu"] = "You first need to check Processor!",
-        --
-        ["neworder"] = "Your new order address has been marked",
-        ["ondelivery"] = "You are already delivering",
-        ["realy"] = "Are you ready for sale?",
-        ["finish"] = "Sale Is Finish",
+        ["needtostartjob"] = "You need to start a job first!",
+        ["neworder"] = "The address for a New Order has been marked on your GPS!",
+        ["ondelivery"] = "You already have a Delivery.",
+        ["finish"] = "Finished Sale",
         ["notselling"] = "You haven't started selling",
-        ["notfinish"] = "You must be in the vehicle to finish the delivery",
+        ["notfinish"] = "The job is not finished",
         ["packetsell"] = "Order is being delivered",
-        ["needitem"] = "Required items are missing.",
+        ["needitem"] = "You are missing the Delivery item",
         ["deliverynotify"] = "You received $",
-        --
-        ["success"] = "Success"
+        ["success"] = "Success",
+        ["nojob"] = "You are not employed with the IT Company.",
     },
 
     mail = {
         ["sender"] = "Mr. Smith",
-        --
         ["subject"] = "IT C.E.O",
-        ["message"] = "Good Work! Get back to company to collect money."
+        ["message"] = "Head back to Company HQ to collect your payment."
     },
 
     qbmenu = {
@@ -61,9 +54,9 @@ local Translations = {
         ["replaceit"] = "Replace this part",
         ["needtodeliver"] = "You need to delivery:",
         ["tolocation"] = "To location on map",
-        ["deliver"] = "[E] Deliver",
+        ["deliver"] = "[E] Deliver %s",
         ["confirm"] = "Confirm",
-        ["wdmoney"] = "Withdraw money",
+        ["wdmoney"] = "Withdraw Money",
         ["cash"] = "Cash",
         ["bank"] = "Bank",
         ["closeheader"] = "Close (ESC)"

@@ -1,10 +1,11 @@
 Config = {}
-Config.Debug = true
-Config.Job = 'itcomp'
+Config.Debug = false
+Config.RequireJob = false
+Config.Job = 'sast'
 Config.Phone = 'notify' -- qb-phone, gks-phone, qs-phone, notify
 Config.tarortxt = 'qb-target' -- qb-target or drawtxt
 Config.InventoryImage = "ps-inventory/html/images/"
-Config.Payout = math.random(2000, 4000)
+Config.Payout = math.random(1000, 2000)
 Config.RequireRepairItem = true
 Config.RepairItem = "it_toolkit"
 
@@ -29,6 +30,7 @@ Config.CarSpawnCoord = vector4(-834.41, -685.18, 27.28, 0.29)
 Config.DeliveryVeh = "burrito3"
 Config.Fuel = "cdn-fuel"
 Config.VehPlate = "Delivery"
+
 Config.Items = {
     "monitor",
     "keyboard",
@@ -44,8 +46,11 @@ Config.Items = {
     "cables"
 }
 
-Config.ProgressbarTime = 4000
-Config.ItemPrice = 500
+Config.ProgressbarTime = 5000 -- How long is the progressbar for delivering an item (5000 = 5 seconds)
+Config.DeliveryPrice = { -- The CASH reward that players receive when delivering one item
+    min = 350,
+    max = 500,
+}
 
 Config.DeliveryCoords = {
     [1] = {['x'] = 224.15, ['y'] = 513.55, ['z'] = 140.92,['h'] = 245.45, ['info'] = 'Vinewood 1'},
@@ -77,7 +82,7 @@ Config.PcParts = {
     items = {
         [1] = {
             name = 'monitor',
-            price = 0,
+            price = 350,
             amount = 500,
             info = {},
             type = 'item',
@@ -85,7 +90,7 @@ Config.PcParts = {
         },
         [2] = {
             name = 'keyboard',
-            price = 0,
+            price = 200,
             amount = 500,
             info = {},
             type = 'item',
@@ -93,7 +98,7 @@ Config.PcParts = {
         },
         [3] = {
             name = 'mouse',
-            price = 0,
+            price = 80,
             amount = 500,
             info = {},
             type = 'item',
@@ -101,7 +106,7 @@ Config.PcParts = {
         },
         [4] = {
             name = 'compcase',
-            price = 0,
+            price = 250,
             amount = 500,
             info = {},
             type = 'item',
@@ -109,7 +114,7 @@ Config.PcParts = {
         },
         [5] = {
             name = 'powersupply',
-            price = 0,
+            price = 400,
             amount = 500,
             info = {},
             type = 'item',
@@ -117,7 +122,7 @@ Config.PcParts = {
         },
         [6] = {
             name = 'cables',
-            price = 0,
+            price = 120,
             amount = 500,
             info = {},
             type = 'item',
@@ -125,7 +130,7 @@ Config.PcParts = {
         },
         [7] = {
             name = 'it_toolkit',
-            price = 0,
+            price = 150,
             amount = 500,
             info = {},
             type = 'item',
@@ -133,7 +138,7 @@ Config.PcParts = {
         },
         [8] = {
             name = 'cpu',
-            price = 0,
+            price = 750,
             amount = 500,
             info = {},
             type = 'item',
@@ -141,7 +146,7 @@ Config.PcParts = {
         },
         [9] = {
             name = 'cpucooler',
-            price = 0,
+            price = 550,
             amount = 500,
             info = {},
             type = 'item',
@@ -149,7 +154,7 @@ Config.PcParts = {
         },
         [10] = {
             name = 'motherboard',
-            price = 0,
+            price = 650,
             amount = 500,
             info = {},
             type = 'item',
@@ -157,7 +162,7 @@ Config.PcParts = {
         },
         [11] = {
             name = 'memory',
-            price = 0,
+            price = 100,
             amount = 500,
             info = {},
             type = 'item',
@@ -165,7 +170,7 @@ Config.PcParts = {
         },
         [12] = {
             name = 'graphiccard',
-            price = 0,
+            price = 1000,
             amount = 500,
             info = {},
             type = 'item',
@@ -173,7 +178,7 @@ Config.PcParts = {
         },
         [13] = {
             name = 'ssd',
-            price = 0,
+            price = 150,
             amount = 500,
             info = {},
             type = 'item',
