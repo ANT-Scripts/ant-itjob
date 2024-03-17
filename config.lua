@@ -1,22 +1,51 @@
 Config = {}
-Config.InventoryImage = "ox_inventory/web/images/"
-Config.Target = "qb-target" -- Supports: "qb-target"
-Config.Menu = "ox_lib"  -- Supports: "ox_lib"
-Config.Phone = "qb-phone" -- Supports: "qb"
+Config.Debug = true
+Config.Job = 'itcomp'
+Config.Phone = 'notify' -- qb-phone, gks-phone, qs-phone, notify
+Config.tarortxt = 'qb-target' -- qb-target or drawtxt
+Config.InventoryImage = "ps-inventory/html/images/"
+Config.Payout = math.random(2000, 4000)
+Config.RequireRepairItem = true
+Config.RepairItem = "it_toolkit"
+
+Config.ShopPed = 'a_m_m_eastsa_02'
+Config.ShopHash = 'a_m_m_eastsa_02'
+Config.ShopLocation = vector3(89.71, -1101.65, 28.28)
+Config.ShopHeading = 62.94
 
 Config.TaskPed = 'a_m_y_stbla_02'
 Config.TaskPedHash = 'a_m_y_stbla_02'
 Config.TaskPedLocation = vector3(-826.89, -690.01, 27.06)
 Config.TaskPedHeading = 88.75
 
-Config.BlipName = 'IT Company' -- For calls
+Config.BlipName = 'IT Comp. Call' -- For calls
+Config.BlipName2 = 'IT Company'
 Config.BlipLocation = vector3(-827.46, -689.94, 28.06)
-Config.Items = {"keyboard", "mouse", "compcase", "powersupply", "cpu", "cpucooler", "motherboard", "memory", "graphiccard", "ssd", "cables"}
-Config.CheckPartDuration = 10000 -- in ms (10000 = 10 seconds)
-Config.RequiredItem = "it_toolbox"
+Config.BlipName3 = 'IT Shop'
+Config.BlipLocation3 = vector3(88.99, -1101.38, 29.28)
 
-Config.JobPayout = math.random(175, 350)
-Config.ProgressbarTime = 5000
+Config.GiveVehicle = false
+Config.CarSpawnCoord = vector4(-834.41, -685.18, 27.28, 0.29)
+Config.DeliveryVeh = "burrito3"
+Config.Fuel = "cdn-fuel"
+Config.VehPlate = "Delivery"
+Config.Items = {
+    "monitor",
+    "keyboard",
+    "mouse",
+    "compcase",
+    "powersupply",
+    "cpu",
+    "cpucooler",
+    "motherboard",
+    "memory",
+    "graphiccard",
+    "ssd",
+    "cables"
+}
+
+Config.ProgressbarTime = 4000
+Config.ItemPrice = 500
 
 Config.DeliveryCoords = {
     [1] = {['x'] = 224.15, ['y'] = 513.55, ['z'] = 140.92,['h'] = 245.45, ['info'] = 'Vinewood 1'},
@@ -41,3 +70,124 @@ Config.Locations = {
         }
     },
 }
+
+Config.PcParts = {
+    label = 'PC Parts',
+    slots = 13,
+    items = {
+        [1] = {
+            name = 'monitor',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 1,
+        },
+        [2] = {
+            name = 'keyboard',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 2,
+        },
+        [3] = {
+            name = 'mouse',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 3,
+        },
+        [4] = {
+            name = 'compcase',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 4,
+        },
+        [5] = {
+            name = 'powersupply',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 5,
+        },
+        [6] = {
+            name = 'cables',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 6,
+        },
+        [7] = {
+            name = 'it_toolkit',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 7,
+        },
+        [8] = {
+            name = 'cpu',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 8,
+        },
+        [9] = {
+            name = 'cpucooler',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 9,
+        },
+        [10] = {
+            name = 'motherboard',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 10,
+        },
+        [11] = {
+            name = 'memory',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 11,
+        },
+        [12] = {
+            name = 'graphiccard',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 12,
+        },
+        [13] = {
+            name = 'ssd',
+            price = 0,
+            amount = 500,
+            info = {},
+            type = 'item',
+            slot = 13,
+        },
+
+    }
+}
+
+--██╗    ██╗███████╗██████╗ ██╗  ██╗ ██████╗  ██████╗ ██╗  ██╗
+--██║    ██║██╔════╝██╔══██╗██║  ██║██╔═══██╗██╔═══██╗██║ ██╔╝
+--██║ █╗ ██║█████╗  ██████╔╝███████║██║   ██║██║   ██║█████╔╝
+--██║███╗██║██╔══╝  ██╔══██╗██╔══██║██║   ██║██║   ██║██╔═██╗
+--╚███╔███╔╝███████╗██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║  ██╗
+-- ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
+Config.WebhookURL = 'CHANGE ME'
+Config.WebhookName = 'CHANGE ME'         -- The name of the Webhook (e.g. Infinity RP)
