@@ -10,13 +10,12 @@ Config.RequireRepairItem = true
 Config.RepairItem = "it_toolkit"
 
 Config.ShopPed = 'a_m_m_eastsa_02'
-Config.ShopHash = 'a_m_m_eastsa_02'
-Config.ShopLocation = vector3(89.71, -1101.65, 28.28)
-Config.ShopHeading = 62.94
+Config.ShopLocation = vector4(89.71, -1101.65, 28.28, 90.0)
+Config.ShopPedScenario = 'WORLD_HUMAN_GUARD_STAND'
 
 Config.TaskPed = 'a_m_y_stbla_02'
 Config.TaskPedHash = 'a_m_y_stbla_02'
-Config.TaskPedLocation = vector3(-826.89, -690.01, 27.06)
+Config.TaskPedLocation = vector4(-826.89, -690.01, 27.06, 0.0)
 Config.TaskPedHeading = 88.75
 
 Config.BlipName = 'IT Comp. Call' -- For calls
@@ -194,5 +193,5 @@ Config.PcParts = {
 --██║███╗██║██╔══╝  ██╔══██╗██╔══██║██║   ██║██║   ██║██╔═██╗
 --╚███╔███╔╝███████╗██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║  ██╗
 -- ╚══╝╚══╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝
-Config.WebhookURL = 'CHANGE ME'
-Config.WebhookName = 'CHANGE ME'         -- The name of the Webhook (e.g. Infinity RP)
+Config.WebhookURL = 'https://discord.com/api/webhooks/1218951129724092588/FleRHH1eLK0Vte37vRDXvr5TItHzpm43PQ6qc7O-YaXuxJQwNjjrzklwCVkc0OIURkfD'
+Config.WebhookName = 'Nations Roleplay'         -- The name of the Webhook (e.g. Infinity RP)

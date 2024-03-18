@@ -27,32 +27,21 @@ Citizen.CreateThread(function()
     EndTextCommandSetBlipName(ItCompJob)
 end)
 
-Citizen.CreateThread(function()
-    hashKey = RequestModel(GetHashKey(Config.ShopPed))
-    while not HasModelLoaded(GetHashKey(Config.ShopPed)) do
-        Wait(1)
-    end
-    local npc = CreatePed(4, Config.ShopHash, Config.ShopLocation, false, true)
-    SetEntityHeading(npc, Config.ShopHeading)
-    FreezeEntityPosition(npc, true)
-    SetEntityInvincible(npc, true)
-    SetBlockingOfNonTemporaryEvents(npc, true)
-end)
+local function CreateShopPED()
+    QBCore.Functions.LoadModel(Config.ShopPed)
+    local ped = CreatePed(0, Config.ShopPed, Config.ShopLocation.x, Config.ShopLocation.y, Config.ShopLocation.z, Config.ShopLocation.w, false, false)
+    while not DoesEntityExist(ped) do Wait(1) end
+    FreezeEntityPosition(ped, true)
+    SetEntityInvincible(ped, true)
+    SetBlockingOfNonTemporaryEvents(ped, true)
+    SetPedCanPlayAmbientAnims(ped, true)
+    TaskStartScenarioInPlace(ped, Config.ShopPedScenario, 0, true)
+    TriggerEvent('ant-itjob:client:shopTarget', ped)
+    return ped
+end
 
-Citizen.CreateThread(function()
-    hashKey = RequestModel(GetHashKey(Config.TaskPed))
-    while not HasModelLoaded(GetHashKey(Config.TaskPed)) do
-        Wait(1)
-    end
-    local npc = CreatePed(4, Config.TaskPedHash, Config.TaskPedLocation, false, true)
-    SetEntityHeading(npc, Config.TaskPedHeading)
-    FreezeEntityPosition(npc, true)
-    SetEntityInvincible(npc, true)
-    SetBlockingOfNonTemporaryEvents(npc, true)
-end)
-
-Citizen.CreateThread(function()
-    exports['qb-target']:AddTargetModel(Config.ShopPed, {
+RegisterNetEvent('ant-itjob:client:shopTarget', function(ped)
+    exports['qb-target']:AddTargetEntity(ped, {
     	options = {
     		{
     			icon = 'far fa-clipboard',
@@ -74,6 +63,31 @@ Citizen.CreateThread(function()
     	},
     	distance = 2.5,
     })
+end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    CreateShopPED()
+end)
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then
+        return
+    end
+    if Config.Debug then
+        CreateShopPED()
+    end
+end)
+
+Citizen.CreateThread(function()
+    hashKey = RequestModel(GetHashKey(Config.TaskPed))
+    while not HasModelLoaded(GetHashKey(Config.TaskPed)) do
+        Wait(1)
+    end
+    local npc = CreatePed(4, Config.TaskPedHash, Config.TaskPedLocation, false, true)
+    SetEntityHeading(npc, Config.TaskPedHeading)
+    FreezeEntityPosition(npc, true)
+    SetEntityInvincible(npc, true)
+    SetBlockingOfNonTemporaryEvents(npc, true)
 end)
 
 Citizen.CreateThread(function()

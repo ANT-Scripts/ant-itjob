@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'ANT Scripts'
 description 'A fork of 6x_itcompjob'
-version '1.0.0'
+version '1.0.1'
 
 client_scripts{
     'client/client.lua',
